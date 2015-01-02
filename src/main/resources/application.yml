@@ -1,0 +1,71 @@
+app:
+  host: localhost
+  postgres:
+    host: localhost
+  redis:
+    host: localhost
+server:
+ port: 8083
+ contextPath: /uaa
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+  client:
+    serviceUrl:
+      defaultZone: http://${app.host}:8761/eureka/
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    com.netflix.discovery: 'OFF'
+  file: /var/acme_logs/auth-server.log
+spring:
+  application:
+    name: auth-server
+
+  datasource:
+      dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
+      url: jdbc:postgresql://${app.postgres.host}:5432/postgres
+      databaseName: postgres
+      serverName: ${app.postgres.host}
+      username: postgres
+      password: postgres
+
+  jpa:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      database: POSTGRESQL
+      openInView: false
+      show_sql: false
+      generate-ddl: false
+      hibernate:
+          ddl-auto: validate
+          naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+      properties:
+          hibernate.cache.use_second_level_cache: false
+          hibernate.cache.use_query_cache: false
+          hibernate.generate_statistics: false
+---
+spring:
+  profiles: test
+  datasource:
+      dataSourceClassName: org.h2.Driver
+      url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      databaseName: testdb
+      serverName: localhost
+      username: sa
+      password:
+
+  jpa:
+      database-platform: org.hibernate.dialect.H2Dialect
+      database: H2
+      openInView: false
+      show_sql: false
+      generate-ddl: false
+      hibernate:
+          ddl-auto: validate
+          naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+      properties:
+          hibernate.cache.use_second_level_cache: false
+          hibernate.cache.use_query_cache: false
+          hibernate.generate_statistics: false
