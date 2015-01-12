@@ -25,12 +25,12 @@ import java.security.KeyPair
  *
  * The Authentication flow for the client application will go like this:
  * <ol>
- * <li>The user will provide username and password via a login form on the browser application (ACME-UI)
- * <li>The credentials will be submitted to the API-GATEWAY layer application, which will route the post request
- * to the authorization server
+ * <li>The user will be redirected to the auth server to provide credentials or register/activate
+ * <li>The user will provide username and password via a login form (auth server)
+ * <li>The credentials will be submitted kicking off the user authentication flow
  *<li>The authorization server will authenticate the user, and initiate the oauth auth code grant flow, which is detailed
  * very well by David Syer in his many blog posts on Oauth2
- *
+ *<li> The user will be redirected back to the API-GATEWAY service but will now have a valid token in their session
  * Note that on a production system SSL/TLS should be used for transport layer security.  This is most easily
  * done on a SPA application by simply making the entire application SSL, and redirecting the user to HTTPS
  * if they request an HTTP endpoint.
