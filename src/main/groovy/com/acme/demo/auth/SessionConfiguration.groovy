@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.core.env.Environment
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
+import org.springframework.session.web.http.HeaderHttpSessionStrategy
 
 /**
  * Use Spring Session to manage our sessions across micro services.  Also has the
@@ -31,5 +32,4 @@ class SessionConfiguration {
         jedisConnectionFactory.setHostName(environment.getProperty("app.redis.host"))
         return jedisConnectionFactory
     }
-
 }

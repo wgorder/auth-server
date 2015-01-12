@@ -51,9 +51,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register", "/activate/**").permitAll()
                 .anyRequest().authenticated();
     }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) {
-//
-//    }
 }

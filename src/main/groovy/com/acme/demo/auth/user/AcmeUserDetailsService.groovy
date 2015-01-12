@@ -35,36 +35,4 @@ public class AcmeUserDetailsService implements UserDetailsService {
 
         return new AcmeUserDetails(acmeUser);
     }
-
-    private final static class AcmeUserDetails extends AcmeUser implements UserDetails{
-
-        AcmeUserDetails(AcmeUser acmeUser) {
-            super(acmeUser)
-        }
-
-        @Override
-        String getUsername() {
-            return getEmail()
-        }
-
-        @Override
-        boolean isAccountNonExpired() {
-            return true
-        }
-
-        @Override
-        boolean isAccountNonLocked() {
-            return true
-        }
-
-        @Override
-        boolean isCredentialsNonExpired() {
-            return true
-        }
-
-        @Override
-        boolean isEnabled() {
-            return isActivated()
-        }
-    }
 }
