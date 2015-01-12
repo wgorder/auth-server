@@ -22,15 +22,8 @@ import java.security.Principal
 @Slf4j
 class UserController {
 
-    @Autowired
-    SecurityAccessor securityAccessor
-
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public Principal user(Principal principal) {
-        if(principal.userAuthentication instanceof AcmeUserDetails) {
-            log.info "YAY it is correct: ${principal.userAuthentication}"
-        }
-        return principal //todo should be an instance of AcmeUserDetails but its not
-        //securityAccessor.getCurrentUser()
+        return principal
     }
 }
