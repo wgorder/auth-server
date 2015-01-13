@@ -47,6 +47,7 @@ class AcmeUser implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE       )
     @Column(name = "user_id")
+    @JsonIgnore
     Long userId
 
     @Email
@@ -72,9 +73,9 @@ class AcmeUser implements Serializable{
 
     @Size(min = 0, max = 20)
     @Column(name = "activation_key", length = 20)
+    @JsonIgnore
     String activationKey
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "USER_AUTHORITY",
@@ -84,17 +85,21 @@ class AcmeUser implements Serializable{
 
     @NotNull
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
+    @JsonIgnore
     String createdBy
 
     @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "created_date", nullable = false)
+    @JsonIgnore
     DateTime createdDate = DateTime.now()
 
     @Column(name = "last_modified_by", length = 50)
+    @JsonIgnore
     String lastModifiedBy
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "last_modified_date")
+    @JsonIgnore
     DateTime lastModifiedDate = DateTime.now()
 }
