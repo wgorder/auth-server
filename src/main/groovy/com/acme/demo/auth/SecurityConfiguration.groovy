@@ -22,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
  */
 @Configuration
 @EnableWebSecurity
-@Order(ManagementServerProperties.ACCESS_OVERRIDE_ORDER)
+@Order(-10)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -47,8 +47,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) {
-        http.formLogin().loginPage("/login").permitAll().and().authorizeRequests()
-                .antMatchers("/register", "/activate/**").permitAll()
-                .anyRequest().authenticated();
+        http
+                .formLogin().loginPage("/login").permitAll()
+        .and()
+                .requestMatchers().antMatchers("/oauth/authorize", "/oauth_confirm_access")
+        .and()
+                .authorizeRequests().antMatchers("/register", "/activate/**").permitAll()
+        .and()
+                .authorizeRequests().anyRequest().authenticated();
     }
 }

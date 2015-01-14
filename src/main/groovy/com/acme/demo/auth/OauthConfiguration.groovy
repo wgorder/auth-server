@@ -6,15 +6,28 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer
+import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor
+import org.springframework.security.oauth2.provider.authentication.TokenExtractor
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.SessionAttributes
+import org.springframework.web.filter.OncePerRequestFilter
 
+import javax.servlet.FilterChain
+import javax.servlet.ServletException
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import java.security.KeyPair
 
 
@@ -35,13 +48,15 @@ import java.security.KeyPair
  * done on a SPA application by simply making the entire application SSL, and redirecting the user to HTTPS
  * if they request an HTTP endpoint.
  *
- * Inspired by David Syers excellent spring-security-angular example and presentation at S2GX
+ * Taken from David Syers excellent spring-security-angular example and presentation at S2GX
  *
  * @author William Gorder
  * @since 12/30/14
  */
 @Configuration
 @EnableAuthorizationServer
+@EnableResourceServer
+@Controller
 @SessionAttributes("authorizationRequest")
 class OauthConfiguration extends AuthorizationServerConfigurerAdapter {
 
@@ -79,5 +94,27 @@ class OauthConfiguration extends AuthorizationServerConfigurerAdapter {
             throws Exception {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess(
                 "isAuthenticated()");
+    }
+
+    @Configuration
+    @EnableResourceServer
+    protected static class Oauth2ResourceConfiguration extends ResourceServerConfigurerAdapter {
+        TokenExtractor tokenExtractor = new BearerTokenExtractor();
+
+        @Override
+        void configure(HttpSecurity http) throws Exception {
+            http.addFilterAfter(new OncePerRequestFilter() {
+                @Override
+                protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, java.io.IOException {
+                    //We don't want to allow access to a resource with no token so clear the security context in case
+                    //it is actually an OAuth2Authentication
+                    if(tokenExtractor.extract(request) == null ) {
+                        SecurityContextHolder.clearContext()
+                    }
+                    filterChain.doFilter(request, response)
+                }
+            }, AbstractPreAuthenticatedProcessingFilter.class)
+            http.authorizeRequests().anyRequest().authenticated()
+        }
     }
 }
