@@ -50,7 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .formLogin().loginPage("/login").permitAll()
         .and()
-                .requestMatchers().antMatchers("/oauth/authorize", "/oauth_confirm_access")
+                .requestMatchers().antMatchers("/login", "/logout", "/oauth/authorize", "/oauth_confirm_access", "/register", "/activate/**")
         .and()
                 .authorizeRequests().antMatchers("/register", "/activate/**").permitAll()
         .and()

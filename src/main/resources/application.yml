@@ -4,6 +4,8 @@ app:
     host: localhost
   redis:
     host: localhost
+security:
+  session: stateless
 server:
  port: 8083
  contextPath: /uaa

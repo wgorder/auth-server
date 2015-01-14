@@ -45,9 +45,6 @@ springBoot {
 
 dependencies {
     testCompile("com.h2database:h2")
-    compile("org.springframework.data:spring-data-redis")
-    compile("redis.clients:jedis")
-    compile("org.springframework.session:spring-session-data-redis:1.0.0.RELEASE")
     compile("org.apache.commons:commons-lang3:3.0")
     compile("org.jboss:jandex:1.2.2.Final")
     compile("postgresql:postgresql:9.1-901-1.jdbc4")
